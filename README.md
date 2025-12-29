@@ -63,8 +63,8 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 
 ## Results
 
-### Out-of-Sample Validation (Year 2012)
-![Validation Results](output/figures/validation_2012_results.png)
+### Out-of-Sample Validation (Year 2013)
+![Validation Results](output/figures/validation_2013_results.png)
 
 ### Multivariate Prediction
 ![Multivariate Results](output/figures/multivariate_lstm_results.png)
