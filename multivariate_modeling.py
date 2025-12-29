@@ -41,8 +41,8 @@ if torch.cuda.is_available():
 # CONFIGURATION
 # ============================================================================
 # Data files
-SST_INDO_FILE = "sst_indo_clean.csv"
-NINO34_FILE = "nina34.anom.data.txt"
+SST_INDO_FILE = "data/processed/sst_indo_clean.csv"
+NINO34_FILE = "data/raw/nina34.anom.data.txt"
 
 # Data parameters
 LOOKBACK = 12  # 12 months lookback (captures full seasonal cycle)
@@ -586,10 +586,10 @@ def plot_results(actual: np.ndarray, predicted: np.ndarray,
     ax2.set_xlim(1, len(train_losses))
     
     plt.tight_layout()
-    plt.savefig('multivariate_lstm_results.png', dpi=150, bbox_inches='tight')
+    plt.savefig('output/figures/multivariate_lstm_results.png', dpi=150, bbox_inches='tight')
     plt.close()
     
-    print("\n✓ Results plot saved to: multivariate_lstm_results.png")
+    print("\n✓ Results plot saved to: output/figures/multivariate_lstm_results.png")
 
 
 # ============================================================================

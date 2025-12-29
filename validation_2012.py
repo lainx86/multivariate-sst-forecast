@@ -32,8 +32,8 @@ if torch.cuda.is_available():
 # ============================================================================
 # CONFIGURATION
 # ============================================================================
-SST_INDO_FILE = "sst_indo_clean.csv"
-NINO34_FILE = "nina34.anom.data.txt"
+SST_INDO_FILE = "data/processed/sst_indo_clean.csv"
+NINO34_FILE = "data/raw/nina34.anom.data.txt"
 
 LOOKBACK = 12  # 12 months lookback window
 
@@ -277,10 +277,10 @@ def plot_2012_validation(actual, predicted, dates, rmse, train_losses):
     ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()
-    plt.savefig('validation_2012_results.png', dpi=150, bbox_inches='tight')
+    plt.savefig('output/figures/validation_2012_results.png', dpi=150, bbox_inches='tight')
     plt.close()
     
-    print(f"\n✓ Saved: validation_2012_results.png")
+    print(f"\n✓ Saved: output/figures/validation_2012_results.png")
 
 
 # ============================================================================

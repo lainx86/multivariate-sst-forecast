@@ -2,6 +2,7 @@
 data_sst/
 data_sst_indo/
 *.nc
+*.pdf
 
 # Python
 __pycache__/

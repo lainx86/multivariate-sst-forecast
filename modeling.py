@@ -42,7 +42,7 @@ if torch.cuda.is_available():
 # CONFIGURATION
 # ============================================================================
 # Data parameters
-INPUT_FILE = "sst_indo_clean.csv"
+INPUT_FILE = "data/processed/sst_indo_clean.csv"
 LOOKBACK = 12  # 12 months lookback (captures full seasonal cycle)
 TRAIN_RATIO = 0.8  # 80% train, 20% test
 
@@ -462,10 +462,10 @@ def plot_results(actual: np.ndarray, predicted: np.ndarray,
     ax2.set_xlim(1, len(train_losses))
     
     plt.tight_layout()
-    plt.savefig('lstm_results.png', dpi=150, bbox_inches='tight')
+    plt.savefig('output/figures/lstm_results.png', dpi=150, bbox_inches='tight')
     plt.close()
     
-    print("\n✓ Results plot saved to: lstm_results.png")
+    print("\n✓ Results plot saved to: output/figures/lstm_results.png")
 
 
 # ============================================================================

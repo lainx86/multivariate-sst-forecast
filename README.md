@@ -9,42 +9,36 @@ Proyek ini memprediksi **Anomali Suhu Permukaan Laut (SST)** di perairan Indones
 
 ---
 
-## Scientific Background
-| Dampak SST Anomaly | Penjelasan |
-|-------------------|------------|
-| 🪸 **Coral Bleaching** | Anomali positif ekstrem menyebabkan pemutihan karang |
-| 🐟 **Perikanan** | Suhu mempengaruhi migrasi ikan dan upwelling |
-| 🌏 **Telekoneksi Iklim** | El Niño/La Niña di Pasifik mempengaruhi Indonesia dengan time lag |
-
----
-
-## Tech Stack
-- **Deep Learning:** PyTorch (LSTM)
-- **Data Processing:** Xarray, Pandas, NumPy
-- **Visualization:** Matplotlib
-
----
-
-## Data Sources
-| Data | Sumber | Fungsi |
-|------|--------|--------|
-| Indonesian SST | NOAA OISST V2 | Target (Y) |
-| Niño 3.4 Index | NOAA ERSSTv5 | Feature/Predictor (X) |
-
----
-
 ## Project Structure
 
 ```
 enso-forecasting/
-├── download_data.py         # Download NetCDF dari NOAA
-├── preprocessing.py         # ETL: NetCDF → CSV (slice, resample, anomaly)
-├── modeling.py              # Univariate LSTM (SST only)
-├── multivariate_modeling.py # Multivariate LSTM (SST + Niño 3.4)
-├── validation_2012.py       # Out-of-Sample Testing (Train: 2000-2011, Test: 2012)
-├── sst_indo_clean.csv       # Processed SST data
-└── nina34.anom.data.txt     # Niño 3.4 Index from NOAA
+├── data/
+│   ├── raw/                    # Raw external data
+│   │   └── nina34.anom.data.txt
+│   └── processed/              # Processed data ready for modeling
+│       └── sst_indo_clean.csv
+├── data_sst/                   # Raw NetCDF files (gitignored)
+├── output/
+│   └── figures/                # Generated plots and visualizations
+│       ├── lstm_results.png
+│       ├── multivariate_lstm_results.png
+│       ├── validation_2012_results.png
+│       └── sst_anomaly_trend.png
+├── download_data.py            # Download NetCDF from NOAA
+├── preprocessing.py            # ETL: NetCDF → CSV
+├── modeling.py                 # Univariate LSTM
+├── multivariate_modeling.py    # Multivariate LSTM (SST + Niño 3.4)
+└── validation_2012.py          # Out-of-Sample Testing
 ```
+
+---
+
+## Data Sources
+| Data | Source | Location |
+|------|--------|----------|
+| Indonesian SST | NOAA OISST V2 | `data/processed/sst_indo_clean.csv` |
+| Niño 3.4 Index | NOAA ERSSTv5 | `data/raw/nina34.anom.data.txt` |
 
 ---
 
@@ -63,12 +57,10 @@ enso-forecasting/
 ## Results
 
 ### Out-of-Sample Validation (Year 2012)
-Model trained on **2000-2011**, tested on **2012** (12 months never seen during training).
+![Validation Results](output/figures/validation_2012_results.png)
 
-![Validation Results](validation_2012_results.png)
-
-### Multivariate Prediction with El Niño Highlighting
-![Multivariate Results](multivariate_lstm_results.png)
+### Multivariate Prediction
+![Multivariate Results](output/figures/multivariate_lstm_results.png)
 
 ---
 
@@ -85,17 +77,10 @@ pip install xarray netCDF4 pandas numpy torch matplotlib scikit-learn
 # 3. Run preprocessing (if starting fresh)
 python preprocessing.py
 
-# 4. Train & evaluate (choose one)
-python multivariate_modeling.py    # Standard 80/20 split
-python validation_2012.py          # Out-of-sample 2012 validation
+# 4. Train & evaluate
+python validation_2012.py          # Recommended: Out-of-sample validation
+python multivariate_modeling.py    # Alternative: 80/20 split
 ```
-
----
-
-## Oceanographic Insight
-- **El Niño Phase:** Niño 3.4 > 1.0°C → Indonesian waters typically **cool**
-- **La Niña Phase:** Niño 3.4 < -1.0°C → Indonesian waters typically **warm**
-- The model learns this **teleconnection** pattern from the Niño 3.4 predictor
 
 ---
 

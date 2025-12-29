@@ -28,7 +28,7 @@ from datetime import datetime
 START_YEAR = 2000
 END_YEAR = 2012
 DATA_DIR = "data_sst"
-OUTPUT_FILE = "sst_indo_clean.csv"
+OUTPUT_FILE = "data/processed/sst_indo_clean.csv"
 
 # Indonesian Maritime Region Boundaries
 # This region captures the main Indonesian archipelago and surrounding waters
@@ -181,10 +181,10 @@ def plot_anomaly_trend(df: pd.DataFrame, output_path: str = "sst_anomaly_trend.p
     
     # Adjust layout and save
     plt.tight_layout()
-    plt.savefig(output_path, dpi=150, bbox_inches='tight')
+    plt.savefig('output/figures/sst_anomaly_trend.png', dpi=150, bbox_inches='tight')
     plt.close()
     
-    print(f"✓ Anomaly trend plot saved to: {output_path}")
+    print(f"✓ Anomaly trend plot saved to: output/figures/sst_anomaly_trend.png")
 
 
 # ============================================================================
