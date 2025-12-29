@@ -82,10 +82,13 @@ cd enso-forecasting
 # 2. Install dependencies
 pip install xarray netCDF4 pandas numpy torch matplotlib scikit-learn
 
-# 3. Run preprocessing (if starting fresh)
+# 3. Download Data
+python download_data.py
+
+# 4. Run preprocessing (if starting fresh)
 python preprocessing.py
 
-# 4. Train & evaluate
+# 5. Train & evaluate
 python validation_2012.py          # Recommended: Out-of-sample validation
 python multivariate_modeling.py    # Alternative: 80/20 split
 ```
