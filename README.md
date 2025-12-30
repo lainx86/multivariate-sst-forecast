@@ -86,6 +86,9 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 ### Multivariate Prediction
 ![Multivariate Results](output/figures/multivariate_lstm_results.png)
 
+### Univariate Prediction
+![Multivariate Results](output/figures/lstm_results.png)
+
 ---
 
 ## How to Run
