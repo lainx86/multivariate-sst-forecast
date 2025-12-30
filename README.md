@@ -49,6 +49,23 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 
 ---
 
+## Training Scripts Comparison
+
+| Script | Input Features | Data Split | Use Case |
+|--------|---------------|------------|----------|
+| `modeling.py` | 1 (SST only) | 80/20 random | Baseline univariate model |
+| `multivariate_modeling.py` | 2 (SST + Niño 3.4) | 80/20 random | Explore ENSO teleconnection |
+| `validation_2024.py` | 2 (SST + Niño 3.4) | Temporal (2023/2024) | **Recommended** - True out-of-sample |
+
+### Perbedaan Utama:
+- **`modeling.py`**: Model hanya melihat sejarah SST Indonesia (univariate). Tidak memanfaatkan informasi ENSO dari Pasifik.
+- **`multivariate_modeling.py`**: Menambahkan Niño 3.4 sebagai prediktor eksternal untuk menangkap telekoneksi ENSO. Split 80/20 random.
+- **`validation_2024.py`**: Sama seperti multivariate, tapi dengan **temporal split** yang realistis. Model dilatih dengan data 2000-2023, lalu diuji pada 2024 yang tidak pernah dilihat saat training.
+
+> **Rekomendasi**: Gunakan `validation_2024.py` untuk evaluasi paling valid karena mensimulasikan skenario forecasting nyata.
+
+---
+
 ## Model Architecture
 
 | Parameter | Value |
