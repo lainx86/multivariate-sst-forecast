@@ -267,9 +267,9 @@ def train_model(model, train_loader, val_loader, epochs, lr):
 # VISUALIZATION
 # ============================================================================
 
-def plot_2024_validation(actual, predicted, dates, nino34, rmse, train_losses, val_losses):
-    """Create visualization with SST, Niño 3.4, and Loss Curves."""
-    fig, axes = plt.subplots(3, 1, figsize=(12, 12), dpi=100)
+def plot_2024_validation(actual, predicted, dates, rmse, train_losses, val_losses):
+    """Create visualization with SST comparison and Loss Curves."""
+    fig, axes = plt.subplots(2, 1, figsize=(12, 9), dpi=100)
     
     month_labels = [d.strftime('%b %Y') for d in dates]
     x_pos = range(len(dates))
@@ -286,35 +286,22 @@ def plot_2024_validation(actual, predicted, dates, nino34, rmse, train_losses, v
     ax1.legend()
     ax1.grid(True, alpha=0.3)
     
-    # Plot 2: Niño 3.4
+    # Plot 2: Loss Curves
     ax2 = axes[1]
-    colors = ['coral' if v > 0.5 else 'steelblue' if v < -0.5 else 'gray' for v in nino34]
-    ax2.bar(x_pos, nino34, color=colors, alpha=0.7, edgecolor='black')
-    ax2.axhline(y=0.5, color='red', linestyle='--', alpha=0.7)
-    ax2.axhline(y=-0.5, color='blue', linestyle='--', alpha=0.7)
-    ax2.axhline(y=0, color='black', alpha=0.5)
-    ax2.set_xticks(x_pos)
-    ax2.set_xticklabels(month_labels, rotation=45, ha='right')
-    ax2.set_ylabel('Niño 3.4 Index (°C)')
-    ax2.set_title('Niño 3.4 Index (Predictor)', fontweight='bold')
-    ax2.grid(True, alpha=0.3, axis='y')
-    
-    # Plot 3: Loss Curves
-    ax3 = axes[2]
-    ax3.plot(train_losses, 'g-', label='Training Loss')
-    ax3.plot(val_losses, 'orange', label='Validation Loss', linestyle='--')
+    ax2.plot(train_losses, 'g-', label='Training Loss')
+    ax2.plot(val_losses, 'orange', label='Validation Loss', linestyle='--')
     
     # Mark best epoch
     min_val_loss = min(val_losses)
     best_epoch = val_losses.index(min_val_loss)
-    ax3.scatter([best_epoch], [min_val_loss], color='red', s=100, zorder=5, 
+    ax2.scatter([best_epoch], [min_val_loss], color='red', s=100, zorder=5, 
                 label=f'Best Model (Epoch {best_epoch+1})')
     
-    ax3.set_xlabel('Epoch')
-    ax3.set_ylabel('MSE Loss')
-    ax3.set_title('Training vs Validation Loss (Early Stopping)', fontweight='bold')
-    ax3.legend()
-    ax3.grid(True, alpha=0.3)
+    ax2.set_xlabel('Epoch')
+    ax2.set_ylabel('MSE Loss')
+    ax2.set_title('Training vs Validation Loss (Early Stopping)', fontweight='bold')
+    ax2.legend()
+    ax2.grid(True, alpha=0.3)
     
     plt.tight_layout()
     plt.savefig('output/figures/validation_2024_results.png', dpi=150, bbox_inches='tight')
@@ -429,8 +416,7 @@ def main():
     print(f"Correlation: {corr:.4f}")
     
     # Plot
-    nino34_2024 = test_2024['nino34'].values
-    plot_2024_validation(actual_original, pred_original, test_2024.index, nino34_2024, rmse, train_losses, val_losses)
+    plot_2024_validation(actual_original, pred_original, test_2024.index, rmse, train_losses, val_losses)
     
     print("\n" + "=" * 70)
     print("VALIDATION COMPLETE")
