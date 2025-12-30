@@ -353,18 +353,24 @@ def main():
     print(f"   - Training Set   : {X_train.shape[0]} samples (Learning)")
     print(f"   - Validation Set : {X_val.shape[0]} samples (Early Stopping Check)")
     
-    # Prepare Test Data (2024)
+    # Prepare Test Data (2024) - PURE FORECASTING
+    # For ALL predictions in 2024, we ONLY use data up to Dec 2023
+    # This simulates real forecasting where we don't have future data
     X_test, y_test = [], []
+    
+    # Use the same input (last 12 months of training) for ALL 2024 predictions
+    # This is "direct multi-step forecasting" - no recursive/autoregressive updates
+    last_12_months_training = train_scaled[-LOOKBACK:]  # Dec 2022 - Nov 2023
+    
     for i in range(len(test_scaled)):
-        if i < LOOKBACK:
-            lookback_data = np.vstack([train_scaled[-(LOOKBACK-i):], test_scaled[:i]]) if i > 0 else train_scaled[-LOOKBACK:]
-        else:
-            lookback_data = test_scaled[i-LOOKBACK:i]
-        X_test.append(lookback_data)
-        y_test.append(test_scaled[i, 0])
+        X_test.append(last_12_months_training)  # Same input for all months
+        y_test.append(test_scaled[i, 0])        # Actual 2024 values as target
     
     X_test = np.array(X_test)
     y_test = np.array(y_test).reshape(-1, 1)
+    
+    print(f"  [PURE FORECASTING] Using only Dec 2022 - Nov 2023 data for prediction")
+    print(f"  No 2024 data is seen by the model during inference")
     
     # Tensor Conversion
     X_train_t = torch.FloatTensor(X_train).to(DEVICE)
