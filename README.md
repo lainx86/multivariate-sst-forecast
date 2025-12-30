@@ -96,8 +96,7 @@ git clone https://github.com/lainx86/enso-forecasting.git
 cd enso-forecasting
 
 # 2. Install dependencies
-pip install xarray netCDF4 pandas numpy torch matplotlib scikit-learn
-
+pip install -r requirements.txt
 # 3. Download Data
 python download_data.py
 
