@@ -20,16 +20,17 @@ enso-forecasting/
 │       └── sst_indo_clean.csv
 ├── data_sst/                   # Raw NetCDF files (gitignored)
 ├── output/
-│   └── figures/                # Generated plots and visualizations
-│       ├── lstm_results.png
-│       ├── multivariate_lstm_results.png
-│       ├── validation_2024_results.png
-│       └── sst_anomaly_trend.png
+│   ├── figures/                # Generated plots and visualizations
+│   │   ├── validation_2024_results.png
+│   │   └── sst_anomaly_trend.png
+│   └── models/                 # Saved model checkpoints
+│       └── best_model.pt
+├── docs/                       # Documentation
+│   └── TECHNICAL_DOCUMENTATION.md
 ├── download_data.py            # Download NetCDF from NOAA
 ├── preprocessing.py            # ETL: NetCDF → CSV
-├── modeling.py                 # Univariate LSTM
-├── multivariate_modeling.py    # Multivariate LSTM (SST + Niño 3.4)
-└── validation_2024.py          # Out-of-Sample Testing (Train: 2000-2023, Test: 2024)
+├── validation_2024.py          # Main Script: Out-of-Sample Testing (Train: 2000-2023, Test: 2024)
+└── validation_2024_GRU.py      # Alternative: GRU Architecture
 ```
 
 ---
@@ -49,20 +50,14 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 
 ---
 
-## Training Scripts Comparison
+## Training Approach
 
-| Script | Input Features | Data Split | Use Case |
-|--------|---------------|------------|----------|
-| `modeling.py` | 1 (SST only) | 80/20 random | Baseline univariate model |
-| `multivariate_modeling.py` | 2 (SST + Niño 3.4) | 80/20 random | Explore ENSO teleconnection |
-| `validation_2024.py` | 2 (SST + Niño 3.4) | Temporal (2023/2024) | **Recommended** - True out-of-sample |
+Script utama `validation_2024.py` menggunakan **TRUE out-of-sample validation**:
+- **Training Data**: 2000-2023 (split internal 80% train / 20% validation untuk early stopping)
+- **Test Data**: 2024 (diambil langsung dari raw NetCDF, tidak pernah dilihat saat training)
+- **Early Stopping**: Training berhenti otomatis jika validation loss tidak membaik selama 15 epoch
 
-### Perbedaan Utama:
-- **`modeling.py`**: Model hanya melihat sejarah SST Indonesia (univariate). Tidak memanfaatkan informasi ENSO dari Pasifik.
-- **`multivariate_modeling.py`**: Menambahkan Niño 3.4 sebagai prediktor eksternal untuk menangkap telekoneksi ENSO. Split 80/20 random.
-- **`validation_2024.py`**: Sama seperti multivariate, tapi dengan **temporal split** yang realistis. Model dilatih dengan data 2000-2023, lalu diuji pada 2024 yang tidak pernah dilihat saat training.
-
-> **Rekomendasi**: Gunakan `validation_2024.py` untuk evaluasi paling valid karena mensimulasikan skenario forecasting nyata.
+> Pendekatan ini mensimulasikan skenario forecasting nyata dimana kita memprediksi masa depan yang benar-benar belum diketahui.
 
 ---
 
@@ -83,9 +78,6 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 ### Out-of-Sample Validation (Year 2024)
 ![Validation Results](output/figures/validation_2024_results.png)
 
-### Multivariate Prediction
-![Multivariate Results](output/figures/multivariate_lstm_results.png)
-
 ---
 
 ## How to Run
@@ -104,8 +96,8 @@ python download_data.py
 python preprocessing.py
 
 # 5. Train & evaluate
-python validation_2024.py          # Recommended: Out-of-sample validation
-python multivariate_modeling.py    # Alternative: 80/20 split
+python validation_2024.py          # LSTM with Early Stopping
+python validation_2024_GRU.py      # Alternative: GRU Architecture
 ```
 
 ---
