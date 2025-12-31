@@ -22,14 +22,40 @@ enso-forecasting/
 ├── output/
 │   ├── figures/                # Generated plots and visualizations
 │   │   ├── validation_2025_improved.png
+│   │   ├── forecast_2025_official.png
 │   │   └── sst_anomaly_trend.png
-│   └── models/                 # Saved model checkpoints
-│       └── best_model_2025_recursive_v2.pt
+│   ├── models/                 # Saved model checkpoints
+│   │   ├── best_model_2025_recursive_v2.pt
+│   │   └── production_model_2025.pt
+│   └── tables/                 # Forecast results
+│       └── forecast_2025.csv
 ├── docs/                       # Documentation
 │   └── TECHNICAL_DOCUMENTATION.md
 ├── download_data.py            # Download NetCDF from NOAA
 ├── preprocessing.py            # ETL: NetCDF → CSV
-└── validation_2025.py          # Main Script: Recursive Forecasting (Train: 2000-2024, Test: 2025)
+├── validation_2025.py          # Validation: Compare forecast vs actual 2025
+└── forecast.py                 # Production: Blind 2025 forecast (no ground truth)
+```
+
+---
+
+## Scripts
+
+| Script | Purpose | Data Used |
+|--------|---------|-----------|
+| `validation_2025.py` | Validasi akurasi model dengan ground truth 2025 | Train: 2000-2024, Test: 2025 (actual) |
+| `forecast.py` | **Production forecasting** - simulasi prediksi nyata | Train: 2000-2024, Generate: 2025 (blind) |
+
+### `forecast.py` - Production Forecasting
+Script ini mensimulasikan skenario **real-world forecasting**:
+- Berdiri di **Desember 2024**
+- Memprediksi **seluruh tahun 2025** tanpa data aktual
+- Output: CSV file dengan prediksi bulanan + visualisasi
+
+```bash
+python forecast.py
+# Output: output/tables/forecast_2025.csv
+#         output/figures/forecast_2025_official.png
 ```
 
 ---
@@ -46,18 +72,6 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 **Workflow:**
 1. `download_data.py` → Download data NetCDF dari NOAA ke folder `data_sst/`
 2. `preprocessing.py` → Olah data NetCDF menjadi `data/processed/sst_indo_clean.csv`
-
----
-
-## Training Approach
-
-Script `validation_2025.py` menggunakan **Recursive Autoregressive Forecasting**:
-- **Training Data**: 2000-2024 (split 90% train / 10% validation)
-- **Test Data**: 2025 (diambil langsung dari raw NetCDF, tidak pernah dilihat saat training)
-- **Metode**: Model memprediksi 1 bulan, lalu menggunakan prediksinya sendiri sebagai input bulan berikutnya
-- **Niño 3.4**: Diprediksi secara internal (bukan dari data aktual masa depan)
-
-> **Pure Forecasting**: Tidak ada data 2025 yang dipakai saat inference - mensimulasikan skenario nyata memprediksi masa depan.
 
 ---
 
@@ -84,7 +98,10 @@ Script `validation_2025.py` menggunakan **Recursive Autoregressive Forecasting**
 
 ## Results
 
-### Out-of-Sample Validation (Year 2025)
+### Production Forecast (Blind 2025)
+![Production Forecast](output/figures/forecast_2025_official.png)
+
+### Validation (vs Actual 2025 Data)
 ![Validation Results](output/figures/validation_2025_improved.png)
 
 | Metric | v1 (Old) | v2 (Current) | Improvement |
@@ -111,8 +128,11 @@ python download_data.py
 # 4. Run preprocessing (if starting fresh)
 python preprocessing.py
 
-# 5. Train & evaluate
-python validation_2025.py          # Recursive LSTM Forecasting
+# 5. Validate model accuracy
+python validation_2025.py
+
+# 6. Generate production forecast
+python forecast.py
 ```
 
 ---
