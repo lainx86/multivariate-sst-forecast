@@ -109,12 +109,6 @@ Folder `data_sst/` berisi file NetCDF mentah dari NOAA (~500MB per file) yang **
 #### SST Anomaly Validation
 ![Anomaly Validation](output/figures/validation_2025_improved.png)
 
-| Metric | Value |
-|--------|-------|
-| **RMSE** | 0.1060°C |
-| **MAE** | 0.0843°C |
-| **Correlation** | 0.6377 |
-
 #### Absolute SST Validation
 ![Absolute Validation](output/figures/validation_2025_absolute.png)
 
